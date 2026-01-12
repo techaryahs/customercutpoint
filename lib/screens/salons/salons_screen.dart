@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../widgets/salon_list_card.dart';
+import '../location/location_selection_screen.dart';
 
 class SalonsScreen extends StatefulWidget {
   const SalonsScreen({super.key});
@@ -11,6 +12,7 @@ class SalonsScreen extends StatefulWidget {
 
 class _SalonsScreenState extends State<SalonsScreen> {
   String selectedSort = "Recommended";
+  String selectedLocation = "New York";
 
   final List<String> sortOptions = [
     "Recommended",
@@ -22,36 +24,58 @@ class _SalonsScreenState extends State<SalonsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background, // ⭐ IMPORTANT
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top location row
+              // 🔹 LOCATION ROW
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
-                    children: const [
-                      Icon(Icons.location_on_outlined,
-                          color: AppColors.accent),
-                      SizedBox(width: 6),
+                    children: [
+                      const Icon(
+                        Icons.location_on_outlined,
+                        color: AppColors.accent,
+                      ),
+                      const SizedBox(width: 6),
                       Text(
-                        "New York",
-                        style: TextStyle(
+                        selectedLocation,
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
-                  Text(
-                    "Change",
-                    style: TextStyle(
-                      color: AppColors.accent,
-                      fontWeight: FontWeight.w600,
+
+                  // ✅ CHANGE BUTTON
+                  GestureDetector(
+                    onTap: () async {
+                      final selectedCity =
+                      await Navigator.push<String>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                          const LocationSelectionScreen(),
+                        ),
+                      );
+
+                      if (selectedCity != null) {
+                        setState(() {
+                          selectedLocation = selectedCity;
+                        });
+                      }
+                    },
+                    child: Text(
+                      "Change",
+                      style: TextStyle(
+                        color: AppColors.accent,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
@@ -59,7 +83,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
 
               const SizedBox(height: 16),
 
-              // Page Title
+              // 🔹 PAGE TITLE
               Text(
                 "Nearby Salons",
                 style: TextStyle(
@@ -71,10 +95,10 @@ class _SalonsScreenState extends State<SalonsScreen> {
 
               const SizedBox(height: 20),
 
-              // Filters Row
+              // 🔹 FILTERS ROW
               Row(
                 children: [
-                  // Filters Button
+                  // Filters button
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 14, vertical: 10),
@@ -93,7 +117,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
 
                   const SizedBox(width: 12),
 
-                  // Recommended Dropdown
+                  // Sort dropdown
                   Expanded(
                     child: PopupMenuButton<String>(
                       color: const Color(0xFFF9F5F0),
@@ -111,19 +135,16 @@ class _SalonsScreenState extends State<SalonsScreen> {
                         return sortOptions.map((option) {
                           return PopupMenuItem<String>(
                             value: option,
-                            child: SizedBox(
-                              width: 220,
-                              child: Text(
-                                option,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: option == selectedSort
-                                      ? FontWeight.w600
-                                      : FontWeight.normal,
-                                  color: option == selectedSort
-                                      ? AppColors.accent
-                                      : AppColors.textDark,
-                                ),
+                            child: Text(
+                              option,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: option == selectedSort
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                                color: option == selectedSort
+                                    ? AppColors.accent
+                                    : AppColors.textDark,
                               ),
                             ),
                           );
@@ -137,12 +158,10 @@ class _SalonsScreenState extends State<SalonsScreen> {
                           borderRadius: BorderRadius.circular(24),
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              selectedSort,
-                              style: const TextStyle(fontSize: 14),
-                            ),
+                            Text(selectedSort),
                             const Icon(Icons.keyboard_arrow_down),
                           ],
                         ),
@@ -154,7 +173,7 @@ class _SalonsScreenState extends State<SalonsScreen> {
 
               const SizedBox(height: 24),
 
-              // Salon Cards
+              // 🔹 SALON LIST
               const SalonListCard(
                 name: "Serenity Spa & Wellness",
                 imagePath: "assets/Serenity_spa.jpg",
@@ -178,25 +197,14 @@ class _SalonsScreenState extends State<SalonsScreen> {
               ),
 
               const SalonListCard(
-                name: "Glamour Hair Studio",
-                imagePath: "assets/Glamour_studio.jpg",
-                rating: 4.7,
-                reviews: "189",
+                name: "Elite Men's Grooming",
+                imagePath: "assets/elite_mens.jpg",
+                rating: 4.8,
+                reviews: "210",
                 priceRange: "\$\$",
-                distance: "1.2 km",
-                services: ["Hair", "Nails"],
-                offerText: "15% off",
-              ),
-
-              const SalonListCard(
-                name: "Glamour Hair Studio",
-                imagePath: "assets/Glamour_studio.jpg",
-                rating: 4.7,
-                reviews: "189",
-                priceRange: "\$\$",
-                distance: "1.2 km",
-                services: ["Hair", "Nails"],
-                offerText: "15% off",
+                distance: "0.5 km",
+                services: ["Hair", "Beard"],
+                offerText: "10% off",
               ),
             ],
           ),
